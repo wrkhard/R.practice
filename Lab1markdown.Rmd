@@ -1,0 +1,128 @@
+---
+title: "Lab 1"
+author: "William Keely"
+date: "January 18, 2019"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Task 1
+
+Working Directory:
+
+```{r}
+getwd()
+```
+
+# Task 2
+
+Head fuction
+
+```{r}
+ddt = read.csv("DDT.csv")
+head(ddt)
+```
+
+# Task 3
+```{r}
+names(ddt)
+```
+
+Qualitative: River, Species
+Quantitative: Mile, Weight, Length, DDT
+
+```{r}
+spc = table(ddt$SPECIES)
+print(spc)
+```
+There are 3 species listed.
+
+```{r}
+with(ddt, ddt[WEIGHT>800 & SPECIES=="LMBASS",])
+with(ddt, ddt[RIVER=="SCM" & DDT>4.0,])
+```
+# Q1
+```{r}
+lng = ddt$LENGTH
+
+mean(lng)
+```
+# Q2
+```{r}
+wgt = ddt$WEIGHT
+sd(wgt)
+```
+# Q3
+No this is the correct plot:
+```{r}
+library(ggplot2)
+g = ggplot(ddt, aes(x = LENGTH, y = WEIGHT)) + geom_point(aes(shape = SPECIES))
+print(g)
+```
+
+# Task 4
+
+```{r}
+rvrs = with(ddt, table(RIVER))
+barplot(rvrs, col = rainbow(4))
+sprvrs = with(ddt, table(RIVER,SPECIES))
+barplot(sprvrs,beside = TRUE ,col = rainbow(4))
+with(ddt,legend(1,80, leg=levels(RIVER),bty="n",fill=rainbow(4),cex=0.8))
+```
+
+
+# Task 5
+```{r}
+fish = with(ddt, table(SPECIES))
+pie(fish, col = rainbow(4))
+pie(rvrs, col = rainbow(4))
+```
+
+# Task 6
+```{r}
+
+boxplot(DDT~SPECIES, data=ddt)
+boxplot(LENGTH~SPECIES, data=ddt)
+boxplot(WEIGHT~SPECIES, data=ddt)
+```
+
+# Task 7
+
+```{r}
+rivcol=with(ddt, ifelse(RIVER=="FCM","Red",
+                        ifelse(RIVER=="LCM","Blue",
+                               ifelse(RIVER=="SCM","Green","Black"))))
+coplot(LENGTH~WEIGHT|RIVER,data=ddt,col=rivcol)
+
+fishcolor=with(ddt, ifelse(SPECIES == "CCATFISH","RED",
+                           ifelse(SPECIES=="LMBASS","BLUE",
+                                  ifelse(SPECIES== "SMBUFFALO","GREEN","Black"))))
+coplot(DDT~WEIGHT|SPECIES, data=ddt, col = fishcolor)
+```
+
+
+# Task 8
+
+```{r}
+
+ b = ggplot(ddt, aes(x = SPECIES, y = WEIGHT))
+ b = b + geom_boxplot(aes(fill= RIVER)) + 
+  theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
+  labs(title="William Keely", 
+       subtitle="Weight vs Species",
+       caption="Source: DDT.csv",
+       x="River",
+       y="Length")
+ print(b)
+ v = ggplot(ddt, aes(x = RIVER, y = LENGTH)) + geom_violin(aes(fill = SPECIES)) + theme(axis.text.x = element_text(angle = 65, vjust=0.6))+ labs(title = "William Keely", subtitle = "Length vs River", x ="River", y = "Length")
+ print(v)
+ scatt = ggplot(ddt, aes(x = WEIGHT, y = LENGTH)) + geom_point(aes(col = SPECIES)) + theme(axis.text.x = element_text(angle = 65, vjust=0.6))+ labs(title = "William Keely", subtitle = "Length vs Weight", x ="Weight", y = "Length")
+ print(scatt)
+```
+
